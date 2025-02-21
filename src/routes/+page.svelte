@@ -10,6 +10,14 @@
 	let usersData = $state([...data.users]);
 	let res = $state();
 
+	const getUsers = async () => {
+		res = fetch('/api/users')
+			.then((res) => res.json())
+			.then((data) => {
+				usersData = data.users;
+			});
+	};
+
 	const addUser = async () => {
 		const formData = new FormData();
 		formData.append('name', nameInput);
@@ -19,12 +27,7 @@
 			method: 'POST',
 			body: formData
 		}).then(() => {
-			usersData.push({
-				name: nameInput,
-				age: ageInput,
-				isDone: false
-			});
-
+			getUsers();
 			nameInput = '';
 			ageInput = 0;
 		});
@@ -39,7 +42,7 @@
 			method: 'PATCH',
 			body: formData
 		}).then(() => {
-			usersData = usersData.map((user) => (user.id === id ? { ...user, isDone: true } : user));
+			getUsers();
 		});
 	};
 
@@ -65,9 +68,7 @@
 			method: 'PATCH',
 			body: formData
 		}).then(() => {
-			usersData = usersData.map((user) =>
-				user.id === selectedEditId ? { ...user, name: nameInput, age: ageInput } : user
-			);
+			getUsers();
 
 			selectedEditId = -1;
 			nameInput = '';
@@ -83,7 +84,7 @@
 			method: 'DELETE',
 			body: formData
 		}).then(() => {
-			usersData = usersData.filter((user) => user.id !== id);
+			getUsers();
 		});
 	};
 </script>
