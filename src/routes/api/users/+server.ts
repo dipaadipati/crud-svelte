@@ -5,7 +5,7 @@ import { eq } from 'drizzle-orm';
 import { usersTable } from '$lib/server/db/schema';
 
 export const GET: RequestHandler = async () => {
-    const users = await db.query.usersTable.findMany();
+    const users = await db.select().from(usersTable).orderBy(usersTable.id);
     return json({ users });
 }
 
